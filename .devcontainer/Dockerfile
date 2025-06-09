@@ -29,9 +29,9 @@ RUN apt-get update && \
     chmod +x /tmp/gh_${GITHUB_CLI_VERSION}_linux_${architecture_pretty}/bin/gh && \
     mv /tmp/gh_${GITHUB_CLI_VERSION}_linux_${architecture_pretty}/bin/gh /usr/local/bin/gh && \
     # Install Spectral for OpenAPI linting
-    npm install -g @stoplight/spectral-cli && \
+    npm i -g @stoplight/spectral-cli && \
     # Install semantic-release and plugins
-    npm install -g semantic-release@${SEMANTIC_RELEASE_VERSION} \
+    npm i -g semantic-release@${SEMANTIC_RELEASE_VERSION} \
                    @semantic-release/changelog \
                    @semantic-release/git \
                    @semantic-release/github \
@@ -40,6 +40,7 @@ RUN apt-get update && \
                    conventional-changelog-conventionalcommits && \
     # Install js-yaml for converting JSON RPC schema to YAML
     npm i -g js-yaml@4.1.0 && \
+    npm i -g prettier && \
     # Clean up
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
@@ -50,7 +51,6 @@ USER vscode
 RUN git clone --depth=1 https://github.com/romkatv/powerlevel10k.git /home/vscode/.powerlevel10k
 RUN echo 'source /home/vscode/.powerlevel10k/powerlevel10k.zsh-theme' >> /home/vscode/.zshrc
 RUN echo 'POWERLEVEL9K_DISABLE_CONFIGURATION_WIZARD=true' >> /home/vscode/.zshrc
-
 
 # Shell completion
 RUN echo "source <(gh completion -s zsh)" >> /home/vscode/.zshrc && \

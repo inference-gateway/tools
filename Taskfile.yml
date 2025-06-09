@@ -1,0 +1,23 @@
+---
+version: '3'
+
+tasks:
+  default:
+    desc: 'Show available tasks'
+    cmds:
+      - task --list
+
+  lint:
+    desc: 'Run golangci-lint'
+    cmds:
+      - golangci-lint run --timeout 5m
+
+  build:
+    desc: 'Build the Go application'
+    cmds:
+      - go build -o bin/myapp ./cmd/generator
+
+  clean:
+    desc: 'Clean up build artifacts'
+    cmds:
+      - rm -rf bin
