@@ -61,12 +61,10 @@ func GenerateTypes(destination string, schemaPath string, options *GeneratorOpti
 		}
 	}
 
-	// Set defaults
 	if options.PackageName == "" {
 		options.PackageName = "types"
 	}
 
-	// Merge acronyms
 	acronyms := DefaultAcronyms()
 	for k, v := range options.CustomAcronyms {
 		acronyms[k] = v
@@ -76,7 +74,7 @@ func GenerateTypes(destination string, schemaPath string, options *GeneratorOpti
 		return fmt.Errorf("failed to read schema file: %w", err)
 	}
 
-	var schema map[string]interface{}
+	var schema map[string]any
 
 	switch {
 	case strings.HasSuffix(schemaPath, ".json"):
@@ -91,7 +89,6 @@ func GenerateTypes(destination string, schemaPath string, options *GeneratorOpti
 		return fmt.Errorf("unsupported schema format: must be .json, .yaml, or .yml")
 	}
 
-	// Extract definitions from various schema structures
 	definitions := extractDefinitions(schema)
 	if len(definitions) == 0 {
 		return fmt.Errorf("schema does not contain any type definitions")
@@ -107,10 +104,9 @@ func GenerateTypes(destination string, schemaPath string, options *GeneratorOpti
 		}
 	}()
 
-	// Analyze types to determine needed imports
 	needsTime := false
 	for _, definition := range definitions {
-		if defMap, ok := definition.(map[string]interface{}); ok {
+		if defMap, ok := definition.(map[string]any); ok {
 			if containsTimeType(defMap) {
 				needsTime = true
 				break
@@ -118,7 +114,6 @@ func GenerateTypes(destination string, schemaPath string, options *GeneratorOpti
 		}
 	}
 
-	// Generate header with appropriate imports
 	header := fmt.Sprintf(`// Code generated from JSON schema. DO NOT EDIT.
 package %s
 
@@ -142,18 +137,17 @@ package %s
 	}
 	sort.Strings(typeNames)
 
-	// First pass: generate enums
 	for _, typeName := range typeNames {
 		definition := definitions[typeName]
 
-		defMap, ok := definition.(map[string]interface{})
+		defMap, ok := definition.(map[string]any)
 		if !ok {
 			continue
 		}
 
 		isEnum := false
-		var enumValues []interface{}
-		if enum, ok := defMap["enum"].([]interface{}); ok && len(enum) > 0 {
+		var enumValues []any
+		if enum, ok := defMap["enum"].([]any); ok && len(enum) > 0 {
 			isEnum = true
 			enumValues = enum
 		}
@@ -169,11 +163,10 @@ package %s
 		processedTypes[typeName] = true
 	}
 
-	// Second pass: generate other types
 	for _, typeName := range typeNames {
 		definition := definitions[typeName]
 
-		defMap, ok := definition.(map[string]interface{})
+		defMap, ok := definition.(map[string]any)
 		if !ok {
 			continue
 		}
@@ -198,48 +191,43 @@ package %s
 }
 
 // extractDefinitions extracts type definitions from various schema structures
-func extractDefinitions(schema map[string]interface{}) map[string]interface{} {
-	definitions := make(map[string]interface{})
+func extractDefinitions(schema map[string]any) map[string]any {
+	definitions := make(map[string]any)
 
-	// Try standard JSON Schema locations
-	if defs, ok := schema["definitions"].(map[string]interface{}); ok {
+	if defs, ok := schema["definitions"].(map[string]any); ok {
 		for k, v := range defs {
 			definitions[k] = v
 		}
 	}
 
-	// Try JSON Schema Draft 2019-09+ location
-	if defs, ok := schema["$defs"].(map[string]interface{}); ok {
+	if defs, ok := schema["$defs"].(map[string]any); ok {
 		for k, v := range defs {
 			definitions[k] = v
 		}
 	}
 
-	// Try OpenAPI/Swagger location
-	if components, ok := schema["components"].(map[string]interface{}); ok {
-		if schemas, ok := components["schemas"].(map[string]interface{}); ok {
+	if components, ok := schema["components"].(map[string]any); ok {
+		if schemas, ok := components["schemas"].(map[string]any); ok {
 			for k, v := range schemas {
 				definitions[k] = v
 			}
 		}
 	}
 
-	// Try OpenRPC location
-	if components, ok := schema["components"].(map[string]interface{}); ok {
-		if schemas, ok := components["schemas"].(map[string]interface{}); ok {
+	if components, ok := schema["components"].(map[string]any); ok {
+		if schemas, ok := components["schemas"].(map[string]any); ok {
 			for k, v := range schemas {
 				definitions[k] = v
 			}
 		}
-		if contentDescriptors, ok := components["contentDescriptors"].(map[string]interface{}); ok {
+		if contentDescriptors, ok := components["contentDescriptors"].(map[string]any); ok {
 			for k, v := range contentDescriptors {
 				definitions[k] = v
 			}
 		}
 	}
 
-	// Try root-level schemas (some custom formats)
-	if schemas, ok := schema["schemas"].(map[string]interface{}); ok {
+	if schemas, ok := schema["schemas"].(map[string]any); ok {
 		for k, v := range schemas {
 			definitions[k] = v
 		}
@@ -249,7 +237,7 @@ func extractDefinitions(schema map[string]interface{}) map[string]interface{} {
 }
 
 // generateEnumType generates an enum type definition
-func generateEnumType(outputFile *os.File, typeName string, defMap map[string]interface{}, enumValues []interface{}, acronyms map[string]bool, options *GeneratorOptions) error {
+func generateEnumType(outputFile *os.File, typeName string, defMap map[string]any, enumValues []any, acronyms map[string]bool, options *GeneratorOptions) error {
 	description := ""
 	if desc, ok := defMap["description"].(string); ok {
 		description = desc
@@ -300,7 +288,7 @@ func generateEnumType(outputFile *os.File, typeName string, defMap map[string]in
 }
 
 // generateComplexType generates struct, interface, or other complex type definitions
-func generateComplexType(outputFile *os.File, typeName string, defMap map[string]interface{}, definitions map[string]interface{}, acronyms map[string]bool, options *GeneratorOptions) error {
+func generateComplexType(outputFile *os.File, typeName string, defMap map[string]any, definitions map[string]any, acronyms map[string]bool, options *GeneratorOptions) error {
 	description := ""
 	if desc, ok := defMap["description"].(string); ok {
 		description = desc
@@ -313,9 +301,8 @@ func generateComplexType(outputFile *os.File, typeName string, defMap map[string
 		}
 	}
 
-	// Handle anyOf/oneOf/allOf as interface{}
 	if _, hasAnyOf := defMap["anyOf"]; hasAnyOf {
-		typeDecl := fmt.Sprintf("type %s interface{}\n\n", typeName)
+		typeDecl := fmt.Sprintf("type %s any\n\n", typeName)
 		if _, err := outputFile.WriteString(typeDecl); err != nil {
 			return err
 		}
@@ -323,7 +310,7 @@ func generateComplexType(outputFile *os.File, typeName string, defMap map[string
 	}
 
 	if _, hasOneOf := defMap["oneOf"]; hasOneOf {
-		typeDecl := fmt.Sprintf("type %s interface{}\n\n", typeName)
+		typeDecl := fmt.Sprintf("type %s any\n\n", typeName)
 		if _, err := outputFile.WriteString(typeDecl); err != nil {
 			return err
 		}
@@ -331,21 +318,19 @@ func generateComplexType(outputFile *os.File, typeName string, defMap map[string
 	}
 
 	if _, hasAllOf := defMap["allOf"]; hasAllOf {
-		// For allOf, we could try to merge properties, but for simplicity, use interface{}
-		typeDecl := fmt.Sprintf("type %s interface{}\n\n", typeName)
+		typeDecl := fmt.Sprintf("type %s any\n\n", typeName)
 		if _, err := outputFile.WriteString(typeDecl); err != nil {
 			return err
 		}
 		return nil
 	}
 
-	// Handle object types (structs)
 	structDef := fmt.Sprintf("type %s struct {\n", typeName)
 	if _, err := outputFile.WriteString(structDef); err != nil {
 		return err
 	}
 
-	properties, ok := defMap["properties"].(map[string]interface{})
+	properties, ok := defMap["properties"].(map[string]any)
 	if ok {
 		propNames := make([]string, 0, len(properties))
 		for propName := range properties {
@@ -353,9 +338,8 @@ func generateComplexType(outputFile *os.File, typeName string, defMap map[string
 		}
 		sort.Strings(propNames)
 
-		// Get required fields
 		requiredFields := make(map[string]bool)
-		if required, ok := defMap["required"].([]interface{}); ok {
+		if required, ok := defMap["required"].([]any); ok {
 			for _, field := range required {
 				if fieldName, ok := field.(string); ok {
 					requiredFields[fieldName] = true
@@ -365,7 +349,7 @@ func generateComplexType(outputFile *os.File, typeName string, defMap map[string
 
 		for _, propName := range propNames {
 			propDef := properties[propName]
-			propMap, ok := propDef.(map[string]interface{})
+			propMap, ok := propDef.(map[string]any)
 			if !ok {
 				continue
 			}
@@ -373,7 +357,6 @@ func generateComplexType(outputFile *os.File, typeName string, defMap map[string
 			fieldName := convertToGoFieldName(propName, acronyms)
 			propType := determineGoType(propMap, definitions)
 
-			// Add pointer for optional fields (not required and not having default value)
 			if !requiredFields[propName] && !hasDefaultValue(propMap) {
 				if !strings.HasPrefix(propType, "*") && !strings.HasPrefix(propType, "[]") && !strings.HasPrefix(propType, "map[") {
 					propType = "*" + propType
@@ -401,7 +384,7 @@ func generateComplexType(outputFile *os.File, typeName string, defMap map[string
 }
 
 // hasDefaultValue checks if a property has a default value
-func hasDefaultValue(propMap map[string]interface{}) bool {
+func hasDefaultValue(propMap map[string]any) bool {
 	_, hasDefault := propMap["default"]
 	return hasDefault
 }
@@ -443,12 +426,10 @@ func convertToGoFieldName(name string, acronyms map[string]bool) string {
 		return "Field"
 	}
 
-	// Replace hyphens and other non-alphanumeric characters with underscores
 	name = strings.ReplaceAll(name, "-", "_")
 	name = strings.ReplaceAll(name, ".", "_")
 	name = strings.ReplaceAll(name, " ", "_")
 
-	// Remove any remaining non-alphanumeric characters except underscores
 	var cleanName strings.Builder
 	for _, r := range name {
 		if (r >= 'a' && r <= 'z') || (r >= 'A' && r <= 'Z') || (r >= '0' && r <= '9') || r == '_' {
@@ -457,13 +438,11 @@ func convertToGoFieldName(name string, acronyms map[string]bool) string {
 	}
 	name = cleanName.String()
 
-	// Split on camelCase boundaries and underscores
 	var parts []string
 	var current strings.Builder
 
 	for i, r := range name {
 		if i > 0 && (r >= 'A' && r <= 'Z') && current.Len() > 0 {
-			// Check if this is actually a camelCase boundary or just an acronym
 			prevRune := rune(name[i-1])
 			if prevRune >= 'a' && prevRune <= 'z' {
 				parts = append(parts, current.String())
@@ -477,7 +456,6 @@ func convertToGoFieldName(name string, acronyms map[string]bool) string {
 		parts = append(parts, current.String())
 	}
 
-	// Split further on underscores
 	var finalParts []string
 	for _, part := range parts {
 		subParts := strings.Split(part, "_")
@@ -488,7 +466,6 @@ func convertToGoFieldName(name string, acronyms map[string]bool) string {
 		}
 	}
 
-	// Capitalize each part appropriately
 	for i, part := range finalParts {
 		lowerPart := strings.ToLower(part)
 		if acronyms[lowerPart] {
@@ -500,12 +477,10 @@ func convertToGoFieldName(name string, acronyms map[string]bool) string {
 
 	result := strings.Join(finalParts, "")
 
-	// Ensure the result starts with a capital letter
 	if len(result) > 0 && result[0] >= 'a' && result[0] <= 'z' {
 		result = strings.ToUpper(string(result[0])) + result[1:]
 	}
 
-	// If result is empty or starts with a number, prefix with "Field"
 	if result == "" || (len(result) > 0 && result[0] >= '0' && result[0] <= '9') {
 		result = "Field" + result
 	}
@@ -514,24 +489,21 @@ func convertToGoFieldName(name string, acronyms map[string]bool) string {
 }
 
 // determineGoType determines the Go type for a JSON schema property
-func determineGoType(propMap map[string]interface{}, definitions map[string]interface{}) string {
-	// Handle $ref first
+func determineGoType(propMap map[string]any, definitions map[string]any) string {
 	if ref, ok := propMap["$ref"].(string); ok {
 		parts := strings.Split(ref, "/")
 		refType := parts[len(parts)-1]
 		return refType
 	}
 
-	// Handle arrays
 	if propType, ok := propMap["type"].(string); ok && propType == "array" {
-		if items, ok := propMap["items"].(map[string]interface{}); ok {
+		if items, ok := propMap["items"].(map[string]any); ok {
 			itemType := determineGoType(items, definitions)
 			return "[]" + itemType
 		}
-		return "[]interface{}"
+		return "[]any"
 	}
 
-	// Handle basic types
 	if propType, ok := propMap["type"].(string); ok {
 		format := ""
 		if fmt, ok := propMap["format"].(string); ok {
@@ -587,48 +559,43 @@ func determineGoType(propMap map[string]interface{}, definitions map[string]inte
 		case "boolean":
 			return "bool"
 		case "object":
-			// Check if it has additionalProperties or properties
 			if additionalProps, ok := propMap["additionalProperties"]; ok {
-				if additionalPropsMap, ok := additionalProps.(map[string]interface{}); ok {
+				if additionalPropsMap, ok := additionalProps.(map[string]any); ok {
 					valueType := determineGoType(additionalPropsMap, definitions)
 					return "map[string]" + valueType
 				} else if additionalProps == true {
-					return "map[string]interface{}"
+					return "map[string]any"
 				}
 			}
 
 			if _, hasProperties := propMap["properties"]; hasProperties {
-				// This should probably be its own type, but for now use map
-				return "map[string]interface{}"
+				return "map[string]any"
 			}
 
-			return "map[string]interface{}"
+			return "map[string]any"
 		case "null":
-			return "interface{}"
+			return "any"
 		}
 	}
 
-	// Handle oneOf/anyOf/allOf
-	if oneOf, ok := propMap["oneOf"].([]interface{}); ok && len(oneOf) > 0 {
-		return "interface{}"
+	if oneOf, ok := propMap["oneOf"].([]any); ok && len(oneOf) > 0 {
+		return "any"
 	}
 
-	if anyOf, ok := propMap["anyOf"].([]interface{}); ok && len(anyOf) > 0 {
-		return "interface{}"
+	if anyOf, ok := propMap["anyOf"].([]any); ok && len(anyOf) > 0 {
+		return "any"
 	}
 
-	if allOf, ok := propMap["allOf"].([]interface{}); ok && len(allOf) > 0 {
-		return "interface{}"
+	if allOf, ok := propMap["allOf"].([]any); ok && len(allOf) > 0 {
+		return "any"
 	}
 
-	// Handle const (single value enum)
 	if _, ok := propMap["const"]; ok {
-		return "interface{}"
+		return "any"
 	}
 
 	// Handle enum without type
-	if enum, ok := propMap["enum"].([]interface{}); ok && len(enum) > 0 {
-		// Try to infer type from enum values
+	if enum, ok := propMap["enum"].([]any); ok && len(enum) > 0 {
 		for _, val := range enum {
 			switch val.(type) {
 			case string:
@@ -641,10 +608,10 @@ func determineGoType(propMap map[string]interface{}, definitions map[string]inte
 				return "bool"
 			}
 		}
-		return "interface{}"
+		return "any"
 	}
 
-	return "interface{}"
+	return "any"
 }
 
 // GenerateA2ATypes provides backward compatibility with the original function
@@ -699,7 +666,7 @@ func ValidateSchema(schemaPath string) error {
 		return fmt.Errorf("failed to read schema file: %w", err)
 	}
 
-	var schema map[string]interface{}
+	var schema map[string]any
 
 	switch {
 	case strings.HasSuffix(schemaPath, ".json"):
@@ -723,8 +690,7 @@ func ValidateSchema(schemaPath string) error {
 }
 
 // containsTimeType recursively checks if a schema definition contains time-related types
-func containsTimeType(defMap map[string]interface{}) bool {
-	// Check current level format
+func containsTimeType(defMap map[string]any) bool {
 	if format, ok := defMap["format"].(string); ok {
 		switch format {
 		case "date-time", "date", "time":
@@ -732,10 +698,9 @@ func containsTimeType(defMap map[string]interface{}) bool {
 		}
 	}
 
-	// Check properties
-	if properties, ok := defMap["properties"].(map[string]interface{}); ok {
+	if properties, ok := defMap["properties"].(map[string]any); ok {
 		for _, prop := range properties {
-			if propMap, ok := prop.(map[string]interface{}); ok {
+			if propMap, ok := prop.(map[string]any); ok {
 				if containsTimeType(propMap) {
 					return true
 				}
@@ -743,18 +708,16 @@ func containsTimeType(defMap map[string]interface{}) bool {
 		}
 	}
 
-	// Check array items
-	if items, ok := defMap["items"].(map[string]interface{}); ok {
+	if items, ok := defMap["items"].(map[string]any); ok {
 		if containsTimeType(items) {
 			return true
 		}
 	}
 
-	// Check anyOf/oneOf/allOf
 	for _, key := range []string{"anyOf", "oneOf", "allOf"} {
-		if schemas, ok := defMap[key].([]interface{}); ok {
+		if schemas, ok := defMap[key].([]any); ok {
 			for _, schema := range schemas {
-				if schemaMap, ok := schema.(map[string]interface{}); ok {
+				if schemaMap, ok := schema.(map[string]any); ok {
 					if containsTimeType(schemaMap) {
 						return true
 					}

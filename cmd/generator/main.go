@@ -75,7 +75,7 @@ func main() {
 		log.Fatalf("Schema validation failed: %v", err)
 	}
 
-	var options interface{}
+	var options any
 
 	switch generator.Name() {
 	case "jsonrpc":

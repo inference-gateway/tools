@@ -37,7 +37,7 @@ type GenerateConfig struct {
 	PackageName string
 
 	// Generator-specific options (can be type-asserted by generators)
-	Options interface{}
+	Options any
 }
 
 // Registry manages available generators
