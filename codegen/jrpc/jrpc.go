@@ -131,6 +131,22 @@ package %s
 
 	processedTypes := map[string]bool{}
 
+	inlineEnums := extractInlineEnums(definitions, acronyms)
+
+	inlineEnumNames := make([]string, 0, len(inlineEnums))
+	for enumName := range inlineEnums {
+		inlineEnumNames = append(inlineEnumNames, enumName)
+	}
+	sort.Strings(inlineEnumNames)
+
+	for _, enumName := range inlineEnumNames {
+		enumDef := inlineEnums[enumName]
+		if err := generateEnumType(outputFile, enumName, enumDef.typeInfo, enumDef.values, acronyms, options); err != nil {
+			return err
+		}
+		processedTypes[enumName] = true
+	}
+
 	typeNames := make([]string, 0, len(definitions))
 	for typeName := range definitions {
 		typeNames = append(typeNames, typeName)
@@ -188,6 +204,109 @@ package %s
 	}
 
 	return nil
+}
+
+// inlineEnumDef holds information about an inline enum extracted from a struct property
+type inlineEnumDef struct {
+	values   []any
+	typeInfo map[string]any
+}
+
+// extractInlineEnums scans all definitions for inline enums in struct properties
+// and extracts them as separate enum types
+func extractInlineEnums(definitions map[string]any, acronyms map[string]bool) map[string]inlineEnumDef {
+	inlineEnums := make(map[string]inlineEnumDef)
+
+	for _, definition := range definitions {
+		defMap, ok := definition.(map[string]any)
+		if !ok {
+			continue
+		}
+
+		properties, ok := defMap["properties"].(map[string]any)
+		if !ok {
+			continue
+		}
+
+		for propName, propDef := range properties {
+			propMap, ok := propDef.(map[string]any)
+			if !ok {
+				continue
+			}
+
+			if enumValues, ok := propMap["enum"].([]any); ok && len(enumValues) > 0 {
+				enumTypeName := deriveEnumTypeName(enumValues, propName, acronyms)
+
+				inlineEnums[enumTypeName] = inlineEnumDef{
+					values: enumValues,
+					typeInfo: map[string]any{
+						"description": propMap["description"],
+						"type":        "string",
+					},
+				}
+			}
+		}
+	}
+
+	return inlineEnums
+}
+
+// deriveEnumTypeName derives a meaningful enum type name from enum values or property name
+// It tries to extract a common prefix from enum values (e.g., "TASK_STATE_XXX" -> "TaskState")
+// If no common prefix is found, it uses the property name
+func deriveEnumTypeName(enumValues []any, propName string, acronyms map[string]bool) string {
+	var stringValues []string
+	for _, val := range enumValues {
+		if strVal, ok := val.(string); ok {
+			stringValues = append(stringValues, strVal)
+		}
+	}
+
+	if len(stringValues) == 0 {
+		return convertToGoFieldName(propName, acronyms)
+	}
+
+	commonPrefix := findCommonPrefix(stringValues)
+	if commonPrefix != "" {
+		commonPrefix = strings.TrimSuffix(commonPrefix, "_")
+		typeName := convertToGoFieldName(commonPrefix, acronyms)
+		if typeName != "" && typeName != "Field" {
+			return typeName
+		}
+	}
+
+	return convertToGoFieldName(propName, acronyms)
+}
+
+// findCommonPrefix finds the common prefix of all strings
+// Returns empty string if there's no meaningful common prefix
+func findCommonPrefix(strs []string) string {
+	if len(strs) == 0 {
+		return ""
+	}
+
+	prefix := strs[0]
+
+	for _, str := range strs[1:] {
+		for !strings.HasPrefix(str, prefix) {
+			prefix = prefix[:len(prefix)-1]
+			if prefix == "" {
+				return ""
+			}
+		}
+	}
+
+	if len(prefix) > 2 && strings.HasSuffix(prefix, "_") {
+		return prefix
+	}
+
+	for _, str := range strs {
+		if len(str) > len(prefix) && str[len(prefix)] == '_' {
+			return prefix + "_"
+		}
+	}
+
+	return ""
 }
 
 // extractDefinitions extracts type definitions from various schema structures
@@ -273,8 +392,18 @@ func generateEnumType(outputFile *os.File, typeName string, defMap map[string]an
 	}
 	sort.Strings(enumStrings)
 
+	commonPrefix := findCommonPrefix(enumStrings)
+	if commonPrefix != "" {
+		commonPrefix = strings.TrimSuffix(commonPrefix, "_")
+	}
+
 	for _, val := range enumStrings {
-		enumVal := fmt.Sprintf("\t%s%s %s = \"%s\"\n", typeName, convertToGoFieldName(val, acronyms), typeName, val)
+		constName := val
+		if commonPrefix != "" && strings.HasPrefix(val, commonPrefix+"_") {
+			constName = strings.TrimPrefix(val, commonPrefix+"_")
+		}
+
+		enumVal := fmt.Sprintf("\t%s%s %s = \"%s\"\n", typeName, convertToGoFieldName(constName, acronyms), typeName, val)
 		if _, err := outputFile.WriteString(enumVal); err != nil {
 			return err
 		}
@@ -298,6 +427,17 @@ func generateComplexType(outputFile *os.File, typeName string, defMap map[string
 		formattedDescription := formatDescription(description)
 		if _, err := outputFile.WriteString(formattedDescription + "\n"); err != nil {
 			return err
+		}
+	}
+
+	if _, hasType := defMap["type"].(string); hasType {
+		if _, hasProperties := defMap["properties"]; !hasProperties {
+			goType := determineGoType(defMap, definitions)
+			typeDecl := fmt.Sprintf("type %s = %s\n\n", typeName, goType)
+			if _, err := outputFile.WriteString(typeDecl); err != nil {
+				return err
+			}
+			return nil
 		}
 	}
 
@@ -355,7 +495,13 @@ func generateComplexType(outputFile *os.File, typeName string, defMap map[string
 			}
 
 			fieldName := convertToGoFieldName(propName, acronyms)
-			propType := determineGoType(propMap, definitions)
+
+			var propType string
+			if enumValues, hasEnum := propMap["enum"].([]any); hasEnum && len(enumValues) > 0 {
+				propType = deriveEnumTypeName(enumValues, propName, acronyms)
+			} else {
+				propType = determineGoType(propMap, definitions)
+			}
 
 			if !requiredFields[propName] && !hasDefaultValue(propMap) {
 				if !strings.HasPrefix(propType, "*") && !strings.HasPrefix(propType, "[]") && !strings.HasPrefix(propType, "map[") {
