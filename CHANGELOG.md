@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.2.0](https://github.com/inference-gateway/tools/compare/v0.1.2...v0.2.0) (2025-12-16)
+
+### ✨ Features
+
+* Treat inline enums as proper data types ([86427df](https://github.com/inference-gateway/tools/commit/86427df85118676849e691291affde544966df1f))
+
 ## [0.1.2](https://github.com/inference-gateway/tools/compare/v0.1.1...v0.1.2) (2025-09-02)
 
 ### ♻️ Improvements
