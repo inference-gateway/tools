@@ -1,0 +1,374 @@
+{
+  "lockfile-version": 1,
+  "manifest": {
+    "version": 1,
+    "install": {
+      "claude-code": {
+        "pkg-path": "claude-code",
+        "version": "2.0.76"
+      },
+      "go": {
+        "pkg-path": "go",
+        "version": "^1.24.3"
+      },
+      "golangci-lint": {
+        "pkg-path": "golangci-lint",
+        "version": "2.7.2"
+      }
+    },
+    "hook": {
+      "on-activate": "  export GOENV=\"$FLOX_ENV_CACHE/goenv\"\n  go get .\n\n  echo \"Installing infer CLI...\"\n  curl -fsSL https://raw.githubusercontent.com/inference-gateway/cli/main/install.sh | bash -s -- --install-dir \"$FLOX_ENV_CACHE/bin\"\n  export PATH=\"$FLOX_ENV_CACHE/bin:$PATH\"\n  echo \"✓ infer CLI installed successfully\"\n"
+    },
+    "options": {}
+  },
+  "packages": [
+    {
+      "attr_path": "claude-code",
+      "broken": false,
+      "derivation": "/nix/store/mhfj4qzf10fv2jv9njf0b4jpp7inx6k2-claude-code-2.0.76.drv",
+      "description": "Agentic coding tool that lives in your terminal, understands your codebase, and helps you code faster",
+      "install_id": "claude-code",
+      "license": "Unfree",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=c0b0e0fddf73fd517c3471e546c0df87a42d53f4",
+      "name": "claude-code-2.0.76",
+      "pname": "claude-code",
+      "rev": "c0b0e0fddf73fd517c3471e546c0df87a42d53f4",
+      "rev_count": 917670,
+      "rev_date": "2025-12-28T06:08:05Z",
+      "scrape_date": "2025-12-29T03:02:38.420390Z",
+      "stabilities": [
+        "unstable"
+      ],
+      "unfree": true,
+      "version": "2.0.76",
+      "outputs_to_install": [
+        "out"
+      ],
+      "outputs": {
+        "out": "/nix/store/x9y8cms1gm1sk9vjcqgf40yk9y13qa77-claude-code-2.0.76"
+      },
+      "system": "aarch64-darwin",
+      "group": "toplevel",
+      "priority": 5
+    },
+    {
+      "attr_path": "claude-code",
+      "broken": false,
+      "derivation": "/nix/store/mrdvhrl2yfsd6f6cqsnrv9xcck81hxc9-claude-code-2.0.76.drv",
+      "description": "Agentic coding tool that lives in your terminal, understands your codebase, and helps you code faster",
+      "install_id": "claude-code",
+      "license": "Unfree",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=c0b0e0fddf73fd517c3471e546c0df87a42d53f4",
+      "name": "claude-code-2.0.76",
+      "pname": "claude-code",
+      "rev": "c0b0e0fddf73fd517c3471e546c0df87a42d53f4",
+      "rev_count": 917670,
+      "rev_date": "2025-12-28T06:08:05Z",
+      "scrape_date": "2025-12-29T03:18:00.849905Z",
+      "stabilities": [
+        "unstable"
+      ],
+      "unfree": true,
+      "version": "2.0.76",
+      "outputs_to_install": [
+        "out"
+      ],
+      "outputs": {
+        "out": "/nix/store/1g9prcgxkbi9aw76ym1ygwmv7bldifz4-claude-code-2.0.76"
+      },
+      "system": "aarch64-linux",
+      "group": "toplevel",
+      "priority": 5
+    },
+    {
+      "attr_path": "claude-code",
+      "broken": false,
+      "derivation": "/nix/store/h9lpg0hdb28z4byx51n5vycv5f4rq7xy-claude-code-2.0.76.drv",
+      "description": "Agentic coding tool that lives in your terminal, understands your codebase, and helps you code faster",
+      "install_id": "claude-code",
+      "license": "Unfree",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=c0b0e0fddf73fd517c3471e546c0df87a42d53f4",
+      "name": "claude-code-2.0.76",
+      "pname": "claude-code",
+      "rev": "c0b0e0fddf73fd517c3471e546c0df87a42d53f4",
+      "rev_count": 917670,
+      "rev_date": "2025-12-28T06:08:05Z",
+      "scrape_date": "2025-12-29T03:34:53.660213Z",
+      "stabilities": [
+        "unstable"
+      ],
+      "unfree": true,
+      "version": "2.0.76",
+      "outputs_to_install": [
+        "out"
+      ],
+      "outputs": {
+        "out": "/nix/store/0vqxdvk72pimgpzqlp95dgla3idld3ks-claude-code-2.0.76"
+      },
+      "system": "x86_64-darwin",
+      "group": "toplevel",
+      "priority": 5
+    },
+    {
+      "attr_path": "claude-code",
+      "broken": false,
+      "derivation": "/nix/store/1wk6c1wjmc2nx6n3ii7sbscx4qpca955-claude-code-2.0.76.drv",
+      "description": "Agentic coding tool that lives in your terminal, understands your codebase, and helps you code faster",
+      "install_id": "claude-code",
+      "license": "Unfree",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=c0b0e0fddf73fd517c3471e546c0df87a42d53f4",
+      "name": "claude-code-2.0.76",
+      "pname": "claude-code",
+      "rev": "c0b0e0fddf73fd517c3471e546c0df87a42d53f4",
+      "rev_count": 917670,
+      "rev_date": "2025-12-28T06:08:05Z",
+      "scrape_date": "2025-12-29T03:50:18.427137Z",
+      "stabilities": [
+        "unstable"
+      ],
+      "unfree": true,
+      "version": "2.0.76",
+      "outputs_to_install": [
+        "out"
+      ],
+      "outputs": {
+        "out": "/nix/store/vmmvfrvjnhyip979rfbr3h21sickgh3a-claude-code-2.0.76"
+      },
+      "system": "x86_64-linux",
+      "group": "toplevel",
+      "priority": 5
+    },
+    {
+      "attr_path": "go",
+      "broken": false,
+      "derivation": "/nix/store/zaq4xq9hw1b7a4azgghhh07cpc1ynmin-go-1.25.4.drv",
+      "description": "Go Programming language",
+      "install_id": "go",
+      "license": "BSD-3-Clause",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=c0b0e0fddf73fd517c3471e546c0df87a42d53f4",
+      "name": "go-1.25.4",
+      "pname": "go",
+      "rev": "c0b0e0fddf73fd517c3471e546c0df87a42d53f4",
+      "rev_count": 917670,
+      "rev_date": "2025-12-28T06:08:05Z",
+      "scrape_date": "2025-12-29T03:02:39.290078Z",
+      "stabilities": [
+        "unstable"
+      ],
+      "unfree": false,
+      "version": "1.25.4",
+      "outputs_to_install": [
+        "out"
+      ],
+      "outputs": {
+        "out": "/nix/store/52f5kjcmgmvgrz3rij676b3rjmgg5l5g-go-1.25.4"
+      },
+      "system": "aarch64-darwin",
+      "group": "toplevel",
+      "priority": 5
+    },
+    {
+      "attr_path": "go",
+      "broken": false,
+      "derivation": "/nix/store/hf3knc631mw1pq84qv1hk5jvs467k1v4-go-1.25.4.drv",
+      "description": "Go Programming language",
+      "install_id": "go",
+      "license": "BSD-3-Clause",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=c0b0e0fddf73fd517c3471e546c0df87a42d53f4",
+      "name": "go-1.25.4",
+      "pname": "go",
+      "rev": "c0b0e0fddf73fd517c3471e546c0df87a42d53f4",
+      "rev_count": 917670,
+      "rev_date": "2025-12-28T06:08:05Z",
+      "scrape_date": "2025-12-29T03:18:02.886715Z",
+      "stabilities": [
+        "unstable"
+      ],
+      "unfree": false,
+      "version": "1.25.4",
+      "outputs_to_install": [
+        "out"
+      ],
+      "outputs": {
+        "out": "/nix/store/2ajrlmz1qdpm9k9ankhnp3973wxg1gqs-go-1.25.4"
+      },
+      "system": "aarch64-linux",
+      "group": "toplevel",
+      "priority": 5
+    },
+    {
+      "attr_path": "go",
+      "broken": false,
+      "derivation": "/nix/store/4bmjpvr4w7cw86fqwi1fcm3dq8z2d5pp-go-1.25.4.drv",
+      "description": "Go Programming language",
+      "install_id": "go",
+      "license": "BSD-3-Clause",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=c0b0e0fddf73fd517c3471e546c0df87a42d53f4",
+      "name": "go-1.25.4",
+      "pname": "go",
+      "rev": "c0b0e0fddf73fd517c3471e546c0df87a42d53f4",
+      "rev_count": 917670,
+      "rev_date": "2025-12-28T06:08:05Z",
+      "scrape_date": "2025-12-29T03:34:54.593400Z",
+      "stabilities": [
+        "unstable"
+      ],
+      "unfree": false,
+      "version": "1.25.4",
+      "outputs_to_install": [
+        "out"
+      ],
+      "outputs": {
+        "out": "/nix/store/1rqpvp45rl4sr1l0czrlbmv8jqj9sa7r-go-1.25.4"
+      },
+      "system": "x86_64-darwin",
+      "group": "toplevel",
+      "priority": 5
+    },
+    {
+      "attr_path": "go",
+      "broken": false,
+      "derivation": "/nix/store/zgcfmmah54wp3d2ln1wh9f8ykh4pp8xc-go-1.25.4.drv",
+      "description": "Go Programming language",
+      "install_id": "go",
+      "license": "BSD-3-Clause",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=c0b0e0fddf73fd517c3471e546c0df87a42d53f4",
+      "name": "go-1.25.4",
+      "pname": "go",
+      "rev": "c0b0e0fddf73fd517c3471e546c0df87a42d53f4",
+      "rev_count": 917670,
+      "rev_date": "2025-12-28T06:08:05Z",
+      "scrape_date": "2025-12-29T03:50:20.429117Z",
+      "stabilities": [
+        "unstable"
+      ],
+      "unfree": false,
+      "version": "1.25.4",
+      "outputs_to_install": [
+        "out"
+      ],
+      "outputs": {
+        "out": "/nix/store/0a3dyfq09dnkw28ap2i450wjimvdmv6s-go-1.25.4"
+      },
+      "system": "x86_64-linux",
+      "group": "toplevel",
+      "priority": 5
+    },
+    {
+      "attr_path": "golangci-lint",
+      "broken": false,
+      "derivation": "/nix/store/h6hmls6bhy0an6dc8jnnywdp56hyymcw-golangci-lint-2.7.2.drv",
+      "description": "Fast linters Runner for Go",
+      "install_id": "golangci-lint",
+      "license": "GPL-3.0-or-later",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=c0b0e0fddf73fd517c3471e546c0df87a42d53f4",
+      "name": "golangci-lint-2.7.2",
+      "pname": "golangci-lint",
+      "rev": "c0b0e0fddf73fd517c3471e546c0df87a42d53f4",
+      "rev_count": 917670,
+      "rev_date": "2025-12-28T06:08:05Z",
+      "scrape_date": "2025-12-29T03:02:39.350318Z",
+      "stabilities": [
+        "unstable"
+      ],
+      "unfree": false,
+      "version": "2.7.2",
+      "outputs_to_install": [
+        "out"
+      ],
+      "outputs": {
+        "out": "/nix/store/q3a6xszcxa3rcaq2xa5hli5ynsw9p2xj-golangci-lint-2.7.2"
+      },
+      "system": "aarch64-darwin",
+      "group": "toplevel",
+      "priority": 5
+    },
+    {
+      "attr_path": "golangci-lint",
+      "broken": false,
+      "derivation": "/nix/store/j62j0p76bsd3qxblg777ck3vhffpwijk-golangci-lint-2.7.2.drv",
+      "description": "Fast linters Runner for Go",
+      "install_id": "golangci-lint",
+      "license": "GPL-3.0-or-later",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=c0b0e0fddf73fd517c3471e546c0df87a42d53f4",
+      "name": "golangci-lint-2.7.2",
+      "pname": "golangci-lint",
+      "rev": "c0b0e0fddf73fd517c3471e546c0df87a42d53f4",
+      "rev_count": 917670,
+      "rev_date": "2025-12-28T06:08:05Z",
+      "scrape_date": "2025-12-29T03:18:02.972469Z",
+      "stabilities": [
+        "unstable"
+      ],
+      "unfree": false,
+      "version": "2.7.2",
+      "outputs_to_install": [
+        "out"
+      ],
+      "outputs": {
+        "out": "/nix/store/26ckbfx1m91f1ix7x1v8zckvnccvf03g-golangci-lint-2.7.2"
+      },
+      "system": "aarch64-linux",
+      "group": "toplevel",
+      "priority": 5
+    },
+    {
+      "attr_path": "golangci-lint",
+      "broken": false,
+      "derivation": "/nix/store/w3ilgwgv52rh1q2xiqg0j68ask5pv4yy-golangci-lint-2.7.2.drv",
+      "description": "Fast linters Runner for Go",
+      "install_id": "golangci-lint",
+      "license": "GPL-3.0-or-later",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=c0b0e0fddf73fd517c3471e546c0df87a42d53f4",
+      "name": "golangci-lint-2.7.2",
+      "pname": "golangci-lint",
+      "rev": "c0b0e0fddf73fd517c3471e546c0df87a42d53f4",
+      "rev_count": 917670,
+      "rev_date": "2025-12-28T06:08:05Z",
+      "scrape_date": "2025-12-29T03:34:54.642695Z",
+      "stabilities": [
+        "unstable"
+      ],
+      "unfree": false,
+      "version": "2.7.2",
+      "outputs_to_install": [
+        "out"
+      ],
+      "outputs": {
+        "out": "/nix/store/4ngz15pamb1mvbgk8vqsdc7am0sm3nfl-golangci-lint-2.7.2"
+      },
+      "system": "x86_64-darwin",
+      "group": "toplevel",
+      "priority": 5
+    },
+    {
+      "attr_path": "golangci-lint",
+      "broken": false,
+      "derivation": "/nix/store/5dicahp4k4657qqpdy6rg9kx9pnxdw7j-golangci-lint-2.7.2.drv",
+      "description": "Fast linters Runner for Go",
+      "install_id": "golangci-lint",
+      "license": "GPL-3.0-or-later",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=c0b0e0fddf73fd517c3471e546c0df87a42d53f4",
+      "name": "golangci-lint-2.7.2",
+      "pname": "golangci-lint",
+      "rev": "c0b0e0fddf73fd517c3471e546c0df87a42d53f4",
+      "rev_count": 917670,
+      "rev_date": "2025-12-28T06:08:05Z",
+      "scrape_date": "2025-12-29T03:50:20.519278Z",
+      "stabilities": [
+        "unstable"
+      ],
+      "unfree": false,
+      "version": "2.7.2",
+      "outputs_to_install": [
+        "out"
+      ],
+      "outputs": {
+        "out": "/nix/store/20pjxaqyh10abjhc0by39q7rv3frmx1j-golangci-lint-2.7.2"
+      },
+      "system": "x86_64-linux",
+      "group": "toplevel",
+      "priority": 5
+    }
+  ]
+}
