@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.2.1](https://github.com/inference-gateway/tools/compare/v0.2.0...v0.2.1) (2025-12-30)
+
+### 🐛 Bug Fixes
+
+* Take the first description in case there are duplicated enums types ([58e784d](https://github.com/inference-gateway/tools/commit/58e784d8aaa5dd3e2d2aa12e11028878172f42b2))
+
+### 🔧 Miscellaneous
+
+* Add flox environment and infer configuration ([1227614](https://github.com/inference-gateway/tools/commit/12276144052857ca3ee674d8d507190c90cd6336))
+
 ## [0.2.0](https://github.com/inference-gateway/tools/compare/v0.1.2...v0.2.0) (2025-12-16)
 
 ### ✨ Features
