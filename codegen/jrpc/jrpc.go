@@ -217,7 +217,14 @@ type inlineEnumDef struct {
 func extractInlineEnums(definitions map[string]any, acronyms map[string]bool) map[string]inlineEnumDef {
 	inlineEnums := make(map[string]inlineEnumDef)
 
-	for _, definition := range definitions {
+	defNames := make([]string, 0, len(definitions))
+	for defName := range definitions {
+		defNames = append(defNames, defName)
+	}
+	sort.Strings(defNames)
+
+	for _, defName := range defNames {
+		definition := definitions[defName]
 		defMap, ok := definition.(map[string]any)
 		if !ok {
 			continue
@@ -228,7 +235,14 @@ func extractInlineEnums(definitions map[string]any, acronyms map[string]bool) ma
 			continue
 		}
 
-		for propName, propDef := range properties {
+		propNames := make([]string, 0, len(properties))
+		for propName := range properties {
+			propNames = append(propNames, propName)
+		}
+		sort.Strings(propNames)
+
+		for _, propName := range propNames {
+			propDef := properties[propName]
 			propMap, ok := propDef.(map[string]any)
 			if !ok {
 				continue
@@ -237,12 +251,14 @@ func extractInlineEnums(definitions map[string]any, acronyms map[string]bool) ma
 			if enumValues, ok := propMap["enum"].([]any); ok && len(enumValues) > 0 {
 				enumTypeName := deriveEnumTypeName(enumValues, propName, acronyms)
 
-				inlineEnums[enumTypeName] = inlineEnumDef{
-					values: enumValues,
-					typeInfo: map[string]any{
-						"description": propMap["description"],
-						"type":        "string",
-					},
+				if _, exists := inlineEnums[enumTypeName]; !exists {
+					inlineEnums[enumTypeName] = inlineEnumDef{
+						values: enumValues,
+						typeInfo: map[string]any{
+							"description": propMap["description"],
+							"type":        "string",
+						},
+					}
 				}
 			}
 		}
