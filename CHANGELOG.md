@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.2.2](https://github.com/inference-gateway/tools/compare/v0.2.1...v0.2.2) (2025-12-30)
+
+### 📚 Documentation
+
+* Add CLAUDE.md ([0d1c483](https://github.com/inference-gateway/tools/commit/0d1c483c8cb4fa2ff508929c306b085516c0266e))
+
+### 🔧 Miscellaneous
+
+* Remove devcontainer configuration ([1f6dc90](https://github.com/inference-gateway/tools/commit/1f6dc90ad5702345f0fc36c014df7849b3b3bf35))
+* Update CI workflow dependencies ([8420275](https://github.com/inference-gateway/tools/commit/84202757747855ee774ca93d3b33137a914992e4))
+
 ## [0.2.1](https://github.com/inference-gateway/tools/compare/v0.2.0...v0.2.1) (2025-12-30)
 
 ### 🐛 Bug Fixes
