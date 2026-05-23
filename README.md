@@ -4,7 +4,7 @@
 
 [![Go Version](https://img.shields.io/badge/Go-1.24.3-00ADD8?style=flat&logo=go)](https://golang.org/)
 [![Go Report Card](https://goreportcard.com/badge/github.com/inference-gateway/tools)](https://goreportcard.com/report/github.com/inference-gateway/tools)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![License: Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0)
 [![Build Status](https://img.shields.io/github/actions/workflow/status/inference-gateway/tools/ci.yml?branch=main)](https://github.com/inference-gateway/tools/actions)
 [![Release](https://img.shields.io/github/v/release/inference-gateway/tools)](https://github.com/inference-gateway/tools/releases)
 
