@@ -4,10 +4,10 @@ schema-version = "1.11.0"
 go.pkg-path = "go"
 go.version = "^1.26.2"
 golangci-lint.pkg-path = "golangci-lint"
-golangci-lint.version = "2.12.2"
+golangci-lint.version = "^2.12.2"
 claude-code.pkg-path = "claude-code"
-claude-code.version = "^2.1.141"
-infer.flake = "github:inference-gateway/cli/v0.109.11"
+claude-code.version = "^2.1.148"
+infer.flake = "github:inference-gateway/cli/v0.112.0"
 
 [hook]
 on-activate = """
